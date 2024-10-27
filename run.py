@@ -20,6 +20,9 @@ RESULT_DIR = '/RESULT_DIR/'
 TEST_DIR = '/TEST_DIR/'
 TEST_NAME = 'OS_Eval'
 
+""" Set temporary
+"""
+os.environ['LEBENCH_DIR'] = '/home/purnya/benchmark/LEBench'
 
 """ Grabs the ith kernel from KERN_LIST_FILE.
 """
