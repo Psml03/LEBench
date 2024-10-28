@@ -14,10 +14,10 @@ GRUB_FILE = '/etc/default/grub'
 
 WORKING_DIR = '/home/purnya/benchmark/LEBench/'
 KERN_INDEX_FILE = os.path.join(WORKING_DIR, 'iteration')
-LOCAL_GRUB_FILE = '/grub'
-KERN_LIST_FILE = '/kern_list' 
-RESULT_DIR = '/RESULT_DIR/'
-TEST_DIR = '/TEST_DIR/'
+LOCAL_GRUB_FILE = os.path.join(WORKING_DIR, 'grub')  # Changed to be relative to WORKING_DIR
+KERN_LIST_FILE = os.path.join(WORKING_DIR, 'kern_list')  # Changed to be relative to WORKING_DIR
+RESULT_DIR = os.path.join(WORKING_DIR, 'RESULT_DIR')  # Changed to be relative to WORKING_DIR
+TEST_DIR = os.path.join(WORKING_DIR, 'TEST_DIR')  # Changed to be relative to WORKING_DIR
 TEST_NAME = 'OS_Eval'
 
 """ Set temporary
