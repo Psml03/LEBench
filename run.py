@@ -163,7 +163,8 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # For running LEBench on a list of specified kernel versions.
-    if not os.path.exists(KERN_INDEX_FILE):
+    if not os.path.exists(KERN_INDEX_FILE):#
+        print("This is an immediate output.", flush=True)
         with open(KERN_INDEX_FILE, 'w') as f:
             f.write("-1\n")
 
