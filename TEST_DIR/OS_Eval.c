@@ -1395,7 +1395,7 @@ int main(int argc, char *argv[])
 	}
 	char name[300];
 	strcpy(name, home);
-	strcat(name, OUTPUT_FILE_PATH);
+	strcat(name, "/LEBench/");  // Add /LEBench/ directory here
 	strcat(name, "output.");
 	strcat(name, str_os_name);
 	strcat(name, ".csv");
