@@ -10,19 +10,20 @@ from datetime import datetime
 DEBUG = True
 
 GRUB_CFG_FILE = '/boot/grub/grub.cfg'
-GRUB_FILE = '/etc/default/grub' 
+GRUB_FILE = '/etc/default/grub'
 
-WORKING_DIR      = '/home/purnya/benchmark/LEBench'
-KERN_INDEX_FILE  = '/iteration' 
-LOCAL_GRUB_FILE  = '/grub'
-KERN_LIST_FILE   = '/kern_list' 
-RESULT_DIR       = '/RESULT_DIR/'
-TEST_DIR         = '/TEST_DIR/'
-TEST_NAME        = 'OS_Eval'
+# Updated paths to ensure they are constructed correctly
+WORKING_DIR = '/home/purnya/benchmark/LEBench'
+KERN_INDEX_FILE = WORKING_DIR + '/iteration'  # Fixed path construction
+LOCAL_GRUB_FILE = WORKING_DIR + '/grub'  # Fixed path construction
+KERN_LIST_FILE = WORKING_DIR + '/kern_list'  # Fixed path construction
+RESULT_DIR = WORKING_DIR + '/RESULT_DIR/'  # Fixed path construction
+TEST_DIR = WORKING_DIR + '/TEST_DIR/'  # Fixed path construction
+TEST_NAME = 'OS_Eval'
 
 """ Set temporary
 """
-os.environ['LEBENCH_DIR'] = '/home/purnya/benchmark/LEBench'
+os.environ['LEBENCH_DIR'] = WORKING_DIR  # Use the defined WORKING_DIR
 
 """ Grabs the ith kernel from KERN_LIST_FILE.
 """
@@ -39,7 +40,6 @@ def get_kern_list(idx):
         else:
             raise ValueError('Kernel index out of range, '
                              'expect index to be between 0 and ' + str(len(lines)))
-
 
 """ Modifies the grub file to boot into the target kernel the next time.
 """
@@ -68,7 +68,6 @@ def generate_grub_file(f, target_kern):
     
     return True
 
-
 """Sets up grub using configured grub file and shell cmds.
 """
 def install_grub_file():
@@ -79,11 +78,9 @@ def install_grub_file():
     if DEBUG: print("[DEBUG] Making grub config")
     call(['sudo', 'grub-mkconfig', '-o', GRUB_CFG_FILE])
 
-
 def restart():
     print('[INFO] Restarting the machine now.')
     call(['sudo', 'reboot'])
-
 
 """ Running the LEBench tests for the current kernel version.
 """
@@ -101,7 +98,7 @@ def run_bench():
     print('[INFO] Compiling test ' + TEST_NAME + ".c.")
     call(('make -C ' + TEST_DIR).split())
 
-    result_path = join(RESULT_DIR, kern_version) 
+    result_path = join(RESULT_DIR, kern_version)
     if not os.path.exists(result_path):
         os.makedirs(result_path)
 
@@ -125,7 +122,6 @@ def run_bench():
                 print(line)
             raise Exception('[FATAL] test run encountered error.')
 
-
 if __name__ == '__main__':
     # Setting up working directory and sanity checks.
     if not os.geteuid() == 0:
@@ -139,11 +135,12 @@ if __name__ == '__main__':
     if 'LEBench' not in WORKING_DIR:
         raise ValueError('$LEBENCH_DIR should point to the directory containing LEBench. Example: "/home/username/LEBench/".')
 
-    KERN_INDEX_FILE = WORKING_DIR + KERN_INDEX_FILE
-    LOCAL_GRUB_FILE = WORKING_DIR + LOCAL_GRUB_FILE
-    KERN_LIST_FILE = WORKING_DIR + KERN_LIST_FILE
-    RESULT_DIR = WORKING_DIR + RESULT_DIR
-    TEST_DIR = WORKING_DIR + TEST_DIR
+    # Update paths to use WORKING_DIR correctly
+    KERN_INDEX_FILE = WORKING_DIR + '/iteration'
+    LOCAL_GRUB_FILE = WORKING_DIR + '/grub'
+    KERN_LIST_FILE = WORKING_DIR + '/kern_list'
+    RESULT_DIR = WORKING_DIR + '/RESULT_DIR/'
+    TEST_DIR = WORKING_DIR + '/TEST_DIR/'
 
     if not os.path.exists(KERN_LIST_FILE):
         raise IOError('Cannot open "kern_list" file. If it\'s not present, '
@@ -159,7 +156,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         kern_version = sys.argv[1]
         print("[INFO] Configuring to boot into " + kern_version + ".")
-        generate_grub_file(WORKING_DIR + 'template/grub', kern_version)
+        generate_grub_file(WORKING_DIR + '/template/grub', kern_version)
         install_grub_file()
         sys.exit(0)
 
@@ -186,7 +183,7 @@ if __name__ == '__main__':
         run_bench()
 
     if DEBUG: print('[DEBUG] Preparing to modify grub.')
-    if generate_grub_file(WORKING_DIR + 'template/grub', get_kern_list(next_kern_idx)):
+    if generate_grub_file(WORKING_DIR + '/template/grub', get_kern_list(next_kern_idx)):
         install_grub_file()
         if DEBUG: print('[DEBUG] Done configuring grub for the next kernel.')
         restart()
