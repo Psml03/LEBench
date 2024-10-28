@@ -12,13 +12,13 @@ DEBUG = True
 GRUB_CFG_FILE = '/boot/grub/grub.cfg'
 GRUB_FILE = '/etc/default/grub'
 
-# Updated paths to ensure they are constructed correctly
+# Set WORKING_DIR without the prefix
 WORKING_DIR = '/home/purnya/benchmark/LEBench'
-KERN_INDEX_FILE = WORKING_DIR + '/iteration'  # Fixed path construction
-LOCAL_GRUB_FILE = WORKING_DIR + '/grub'  # Fixed path construction
-KERN_LIST_FILE = WORKING_DIR + '/kern_list'  # Fixed path construction
-RESULT_DIR = WORKING_DIR + '/RESULT_DIR/'  # Fixed path construction
-TEST_DIR = WORKING_DIR + '/TEST_DIR/'  # Fixed path construction
+KERN_INDEX_FILE = WORKING_DIR + '/iteration'  # Ensure this is correct
+LOCAL_GRUB_FILE = WORKING_DIR + '/grub'  # Ensure this is correct
+KERN_LIST_FILE = WORKING_DIR + '/kern_list'  # Ensure this is correct
+RESULT_DIR = WORKING_DIR + '/RESULT_DIR/'  # Ensure this is correct
+TEST_DIR = WORKING_DIR + '/TEST_DIR/'  # Ensure this is correct
 TEST_NAME = 'OS_Eval'
 
 """ Set temporary
@@ -62,10 +62,12 @@ def generate_grub_file(f, target_kern):
             if line.startswith('GRUB_DEFAULT'):
                 line = 'GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux %s"\n' % target_kern
                 lines[idx] = line
-        
-    with open(LOCAL_GRUB_FILE, 'w+') as fp:
+
+    # Correct the path to the template grub file here
+    template_grub_file = WORKING_DIR + '/template/grub'  # Specify the full path here
+    with open(template_grub_file, 'w+') as fp:  # Ensure you open the template grub file
         fp.writelines(lines)
-    
+
     return True
 
 """Sets up grub using configured grub file and shell cmds.
@@ -114,7 +116,7 @@ def run_bench():
     print('[INFO]              Finished running test ' + TEST_NAME + \
           ', test returned ' + str(ret) + ', log written to: ' + result_path + ".")
     print('[INFO]              Current time: ' + str(datetime.now().time()))
-    
+
     with open(result_error_filename, 'r') as fp:
         lines = fp.readlines()
         if len(lines) > 0:
