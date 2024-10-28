@@ -13,7 +13,7 @@ GRUB_CFG_FILE = '/boot/grub/grub.cfg'
 GRUB_FILE = '/etc/default/grub' 
 
 WORKING_DIR = '/home/purnya/benchmark/LEBench/'
-KERN_INDEX_FILE = '/iteration' 
+KERN_INDEX_FILE = os.path.join(WORKING_DIR, 'iteration')
 LOCAL_GRUB_FILE = '/grub'
 KERN_LIST_FILE = '/kern_list' 
 RESULT_DIR = '/RESULT_DIR/'
