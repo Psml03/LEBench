@@ -42,3 +42,7 @@ Traceback (most recent call last):
   File "/home/purnya/benchmark/LEBench/run.py", line 66, in <module>
     raise Exception('This script should be run with "sudo".')
 Exception: This script should be run with "sudo".
+Traceback (most recent call last):
+  File "/home/purnya/benchmark/LEBench/run.py", line 66, in <module>
+    raise Exception('This script should be run with "sudo".')
+Exception: This script should be run with "sudo".
