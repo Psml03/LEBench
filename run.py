@@ -6,10 +6,8 @@ from subprocess import call
 from os.path import join
 from datetime import datetime
 
-DEBUG = True
-
 # Set the working directory
-WORKING_DIR = '/home/purnya/benchmark/LEBench'
+WORKING_DIR = '/mnt/purnya/benchmark/LEBench'
 KERN_INDEX_FILE = WORKING_DIR + '/iteration' 
 LOCAL_GRUB_FILE = WORKING_DIR + '/grub'  
 KERN_LIST_FILE = WORKING_DIR + '/kern_list'  
