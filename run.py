@@ -20,9 +20,8 @@ TEST_NAME = 'OS_Eval'
 # Set temporary
 os.environ['LEBENCH_DIR'] = WORKING_DIR 
 
-# Define the CPU affinity range
-CPU_AFFINITY = "6-11,30-35"
-
+""" Running the LEBench tests for the current kernel version.
+"""
 def run_bench():
     print('[INFO] --------------------------------------------------')
     print('[INFO]              Starting LEBench tests')
@@ -48,10 +47,7 @@ def run_bench():
     result_error_fp = open(result_error_filename, 'w+')
     test_cmd = [TEST_DIR + TEST_NAME, '0', kern_version]
     print('[INFO] Running test with command: ' + ' '.join(test_cmd))
-    
-    # Set CPU affinity for the OS_Eval test process only
-    print(f'[INFO] Setting CPU affinity to {CPU_AFFINITY} for the test process.')
-    ret = call(f"taskset -c {CPU_AFFINITY} {' '.join(test_cmd)}", stdout=result_fp, stderr=result_error_fp)
+    ret = call(test_cmd, stdout=result_fp, stderr=result_error_fp)
 
     print('[INFO]              Finished running test ' + TEST_NAME + \
           ', test returned ' + str(ret) + ', log written to: ' + result_path + ".")
