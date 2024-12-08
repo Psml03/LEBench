@@ -1,57 +1,57 @@
 Performing test ref.
 Total test iteration 1000000.
-Test took: 0.297797925 seconds
+Test took: 0.294804605 seconds
 Performing test cpu.
 Total test iteration 100.
-Test took: 0.451309577 seconds
+Test took: 0.451313879 seconds
 Performing test getpid.
 Total test iteration 1000000.
-Test took: 0.448348451 seconds
+Test took: 0.448148870 seconds
 Performing test context siwtch.
 Total test iteration 100000.
-Test took: 537.968270308 seconds
+Test took: 542.157127158 seconds
 msg size: 1.
 curr iter limit: 50.
 Performing test send.
 Total test iteration 100000.
-Test took: 0.822223217 seconds
+Test took: 0.808331040 seconds
 Performing test recv.
 Total test iteration 100000.
-Test took: 0.781052477 seconds
+Test took: 0.766114294 seconds
 msg size: 96000.
 curr iter limit: 1.
 Performing test big send.
 Total test iteration 10000.
-Test took: 6.438769680 seconds
+Test took: 7.374137962 seconds
 Performing test big recv.
 Total test iteration 10000.
-Test took: 7.872897875 seconds
+Test took: 7.872371215 seconds
 Performing test fork.
 Total test iteration 20000.
-Test took: 5.027258962 seconds
+Test took: 5.007408493 seconds
 Performing test thr create.
 Total test iteration 50000.
-Test took: 1.542882629 seconds
+Test took: 1.575511457 seconds
 Performing test big fork.
 Total test iteration 5000.
-Test took: 27.788137219 seconds
+Test took: 27.712841920 seconds
 Page count: 12000.
 Performing test huge fork.
 Total test iteration 5000.
-Test took: 53.906660582 seconds
+Test took: 53.893616550 seconds
 file size: 4096.
 Performing test small write.
 Total test iteration 100000.
-Test took: 1.507164460 seconds
+Test took: 1.486490554 seconds
 Performing test small read.
 Total test iteration 100000.
-Test took: 0.274951285 seconds
+Test took: 0.282556465 seconds
 Performing test small mmap.
 Total test iteration 100000.
-Test took: 0.558091847 seconds
+Test took: 0.563888451 seconds
 Performing test small munmap.
 Total test iteration 100000.
-Test took: 2.352996575 seconds
+Test took: 2.360999653 seconds
 Performing test small page fault.
 Total test iteration 50000.
 read: a
@@ -50054,20 +50054,20 @@ read: a
 read: a
 read: a
 read: a
-Test took: 0.350982809 seconds
+Test took: 0.351515319 seconds
 file size: 40960.
 Performing test mid write.
 Total test iteration 100000.
-Test took: 8.785797491 seconds
+Test took: 9.105342806 seconds
 Performing test mid read.
 Total test iteration 100000.
-Test took: 0.479771191 seconds
+Test took: 0.486598437 seconds
 Performing test mid mmap.
 Total test iteration 100000.
-Test took: 0.546602887 seconds
+Test took: 0.554258216 seconds
 Performing test mid munmap.
 Total test iteration 100000.
-Test took: 17.988216390 seconds
+Test took: 18.030487504 seconds
 Performing test mid page fault.
 Total test iteration 50000.
 read: a
@@ -100070,20 +100070,20 @@ read: a
 read: a
 read: a
 read: a
-Test took: 0.478783341 seconds
+Test took: 0.481345661 seconds
 file size: 4096000.
 Performing test big write.
 Total test iteration 5000.
-Test took: 33.802616493 seconds
+Test took: 34.242921117 seconds
 Performing test big read.
 Total test iteration 10000.
-Test took: 4.468929475 seconds
+Test took: 4.426936566 seconds
 Performing test big mmap.
 Total test iteration 100000.
-Test took: 0.546885919 seconds
+Test took: 0.553190178 seconds
 Performing test big munmap.
 Total test iteration 2500.
-Test took: 42.886550285 seconds
+Test took: 44.403462738 seconds
 Performing test big page fault.
 Total test iteration 50000.
 read: a
@@ -150086,20 +150086,20 @@ read: a
 read: a
 read: a
 read: a
-Test took: 0.651816177 seconds
+Test took: 0.639967164 seconds
 file size: 40960000.
 Performing test huge write.
 Total test iteration 2500.
-Test took: 229.135099680 seconds
+Test took: 207.326508760 seconds
 Performing test huge read.
 Total test iteration 10000.
-Test took: 118.503541279 seconds
+Test took: 112.643955497 seconds
 Performing test huge mmap.
 Total test iteration 100000.
-Test took: 0.677447977 seconds
+Test took: 0.579235124 seconds
 Performing test huge munmap.
 Total test iteration 2500.
-Test took: 432.680650661 seconds
+Test took: 438.670396994 seconds
 Performing test huge page fault.
 Total test iteration 50000.
 read: a
@@ -200102,23 +200102,23 @@ read: a
 read: a
 read: a
 read: a
-Test took: 0.684091408 seconds
+Test took: 0.656508149 seconds
 Performing test select.
 Total test iteration 100000.
-Test took: 3.325337749 seconds
+Test took: 3.370142855 seconds
 Performing test poll.
 Total test iteration 100000.
-Test took: 3.309792528 seconds
+Test took: 3.357818351 seconds
 Performing test epoll.
 Total test iteration 100000.
-Test took: 4.505642635 seconds
+Test took: 4.570880889 seconds
 Performing test select big.
 Total test iteration 10000.
-Test took: 37.429235956 seconds
+Test took: 37.564532860 seconds
 Performing test poll big.
 Total test iteration 10000.
-Test took: 37.689433296 seconds
+Test took: 37.774838785 seconds
 Performing test epoll big.
 Total test iteration 10000.
-Test took: 50.967286019 seconds
-Test took: 1738.099179387 seconds
+Test took: 51.019366548 seconds
+Test took: 1724.032540783 seconds
