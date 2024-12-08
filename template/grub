@@ -3,7 +3,7 @@
 # For full documentation of the options in this file, see:
 #   info -f grub -n 'Simple configuration'
 
-GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux 3.0.0-0300-generic"
+GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux 5.15.19-htmm"
 GRUB_HIDDEN_TIMEOUT="0"
 GRUB_HIDDEN_TIMEOUT_QUIET="true"
 GRUB_TIMEOUT="10"
