@@ -2,11 +2,9 @@
 import os
 import platform
 import sys
-from subprocess import call, run, Popen
+from subprocess import call
 from os.path import join
 from datetime import datetime
-import time
-import signal
 
 
 # Set the working directory
@@ -29,7 +27,7 @@ def run_bench():
     print('[INFO]              Current time: ' + str(datetime.now().time()))
 
     kern_version = platform.uname()[2]
-    print('[INFO] Current kernel version: ' + kern_version + '.')
+    print('[INFO] current kernel version: ' + kern_version + '.')
 
     test_file = join(TEST_DIR, TEST_NAME)
     print('[INFO] Preparing to run test ' + TEST_NAME + '.')
@@ -50,36 +48,22 @@ def run_bench():
     print('[INFO] Running test with command: ' + ' '.join(test_cmd))
     ret = call(test_cmd, stdout=result_fp, stderr=result_error_fp)
 
-    print('[INFO] Finished running test ' + TEST_NAME + \
+    print('[INFO]              Finished running test ' + TEST_NAME + \
           ', test returned ' + str(ret) + ', log written to: ' + result_path + ".")
-    print('[INFO] Current time: ' + str(datetime.now().time()))
+    print('[INFO]              Current time: ' + str(datetime.now().time()))
 
     with open(result_error_filename, 'r') as fp:
         lines = fp.readlines()
         if len(lines) > 0:
             for line in lines:
                 print(line)
-            raise Exception('[FATAL] Test run encountered error.')
+            raise Exception('[FATAL] test run encountered error.')
 
 if __name__ == '__main__':
-    # Ensure the script runs with sudo
+    # Setting up working directory and sanity checks.
     if not os.geteuid() == 0:
         raise Exception('This script should be run with "sudo".')
 
-    # Start `perf stat` in the background
-    print("[INFO] Starting perf stat...")
-    perf_process = Popen(
-        ["sudo", "perf", "stat", "-e", "cycles,instructions"], 
-        stdout=open("/mnt/purnya/benchmark/Perf/perf_stat_output.txt", "w"), 
-        stderr=open("/mnt/purnya/benchmark/Perf/perf_stat_error.txt", "w")
-    )
-
-    try:
-        # Run the benchmark
-        print("[INFO] Running benchmark on the current kernel version.")
-        run_bench()
-    finally:
-        # Kill the `perf stat` process after the benchmark completes
-        print("[INFO] Stopping perf stat...")
-        perf_process.send_signal(signal.SIGINT)
-        perf_process.wait()
+    # Directly run the benchmark without modifying GRUB
+    print("[INFO] Running benchmark on the current kernel version.")
+    run_bench()
