@@ -61,6 +61,7 @@ char *new_output_fn = NULL;
 
 #define PAGE_SIZE 4096
 
+#define DEBUG_LOG_FILE "/mnt/purnya/benchmark/Perf/debug_log.txt"
 void add_diff_to_sum(struct timespec *result,struct timespec a, struct timespec b)
 {
 	if (result->tv_nsec +a.tv_nsec < b.tv_nsec)
@@ -228,6 +229,108 @@ struct timespec *calc_k_closest(struct timespec *timeArray, int size)
 	return result;
 
 }
+// Function to log debug messages
+void log_debug(const char *message) {
+    FILE *log_file = fopen(DEBUG_LOG_FILE, "a");
+    if (log_file == NULL) {
+        printf("Error: Could not open debug log file.\n");
+        return;
+    }
+
+    fprintf(log_file, "%s\n", message);  // Write message to file
+    fclose(log_file);
+
+}
+
+// Function to get the latest PID of OS_Eval
+int get_latest_pid() {
+    FILE *fp;
+    char path[1035];
+    int pid = -1;
+
+    fp = popen("pgrep -n OS_Eval", "r");
+    if (fp == NULL) {
+        log_debug("Error: Failed to run pgrep command.");
+        return -1;
+    }
+
+    if (fgets(path, sizeof(path), fp) != NULL) {
+        pid = atoi(path);
+        char debug_msg[256];
+        snprintf(debug_msg, sizeof(debug_msg), "Debug: Found PID %d", pid);
+        log_debug(debug_msg);
+    } else {
+        log_debug("Error: No PID found for OS_Eval.");
+    }
+
+    pclose(fp);
+    return pid;
+}
+// Function to launch perf stat using get_latest_pid()
+int launch_perf_stat(const char *testname, const char *events) {
+    char command[2048];
+    const char *output_dir = "/mnt/purnya/benchmark/Perf";
+
+    // Get the latest PID using get_latest_pid()
+    int pid = get_latest_pid();
+    if (pid <= 0) {
+        log_debug("Error: Invalid PID returned by get_latest_pid.");
+        return -1;
+    }
+
+    // Launch perf stat in the background, attached to the PID
+    snprintf(command, sizeof(command),
+             "sudo perf stat -p %d -e %s > %s/%s.txt 2>&1 &",
+             pid, events, output_dir, testname);
+
+    // Log the command being executed
+    char debug_msg[512];
+    snprintf(debug_msg, sizeof(debug_msg), "Debug: Executing command: %s", command);
+    log_debug(debug_msg);
+
+    // Execute the command
+    int ret = system(command);
+    if (ret == -1) {
+        log_debug("Error: Failed to execute perf stat.");
+        return -1;
+    }
+
+    // Log successful launch
+    snprintf(debug_msg, sizeof(debug_msg), "Debug: Launched perf stat for PID %d.", pid);
+    log_debug(debug_msg);
+
+    return pid;
+}
+
+// Function to stop perf stat
+void stop_perf_stat() {
+    FILE *fp = popen("pgrep -n perf", "r");
+    if (!fp) {
+        log_debug("Error: Failed to run pgrep to find perf PID.");
+        return;
+    }
+
+    int perf_pid = -1;
+    if (fscanf(fp, "%d", &perf_pid) != 1 || perf_pid <= 0) {
+        log_debug("Error: Could not find perf PID.");
+        pclose(fp);
+        return;
+    }
+    pclose(fp);
+
+    char msg[256];
+    snprintf(msg, sizeof(msg), "Debug: Found perf PID %d. Attempting to stop.", perf_pid);
+    log_debug(msg);
+
+    // Send SIGINT to the perf process
+    if (kill(perf_pid, SIGINT) == 0) {
+        snprintf(msg, sizeof(msg), "Success: Stopped perf stat with PID %d.", perf_pid);
+        log_debug(msg);
+    } else {
+        snprintf(msg, sizeof(msg), "Error: Failed to stop perf stat with PID %d.", perf_pid);
+        log_debug(msg);
+    }
+}
 
 void one_line_test(FILE *fp, FILE *copy, void (*f)(struct timespec*), testInfo *info){
 	struct timespec testStart, testEnd;
@@ -287,7 +390,6 @@ void one_line_test(FILE *fp, FILE *copy, void (*f)(struct timespec*), testInfo *
 	struct timespec *diffTime = calc_diff(&testStart, &testEnd);
 	printf("Test took: %ld.%09ld seconds\n",diffTime->tv_sec, diffTime->tv_nsec); 
 	free(diffTime);
-
 	return;
 }
 
@@ -443,7 +545,6 @@ void two_line_test(FILE *fp, FILE *copy, void (*f)(struct timespec*,struct times
 	free(diffTime);
 	return;
 }
-
 void forkTest(struct timespec *childTime, struct timespec *parentTime) 
 {
     struct timespec timeA;
@@ -504,7 +605,6 @@ void getpid_test(struct timespec *diffTime) {
 	clock_gettime(CLOCK_MONOTONIC, &endTime);
 	add_diff_to_sum(diffTime, endTime, startTime);
 	return;
-
 }
 
 int file_size = -1;
@@ -515,7 +615,7 @@ void read_test(struct timespec *diffTime) {
 	int fd =open("test_file.txt", O_RDONLY);
 	if (fd < 0) printf("invalid fd in read: %d\n", fd);
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
-	syscall(SYS_read, fd, buf_in, file_size);
+  	syscall(SYS_read, fd, buf_in, file_size);
 	clock_gettime(CLOCK_MONOTONIC, &endTime);
 	close(fd);
 	
@@ -1100,9 +1200,9 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 	}
 
 }
-
 int main(int argc, char *argv[])
-{
+{      
+        launch_perf_stat("benchmark", "cpu-cycles,instructions,branch-instructions,branch-misses,cycle_activity.stalls_total,misc2_retired.lfence");
 	home = getenv("LEBENCH_DIR");
 	
 	output_fn = (char *)malloc(500*sizeof(char));
@@ -1157,7 +1257,7 @@ int main(int argc, char *argv[])
 	sleep(60);
 	info.iter = BASE_ITER * 100;
 	info.name = "ref";
-	one_line_test(fp, copy, ref_test, &info);
+        one_line_test(fp, copy, ref_test, &info);
 
 	info.iter = 100;
 	info.name = "cpu";
@@ -1167,8 +1267,6 @@ int main(int argc, char *argv[])
 	info.iter = BASE_ITER * 100;
 	info.name = "getpid";
 	one_line_test(fp, copy, getpid_test, &info);
-
-
 	
 	/*****************************************/
 	/*            CONTEXT SWITCH             */
@@ -1176,7 +1274,6 @@ int main(int argc, char *argv[])
 	info.iter = BASE_ITER * 10;
 	info.name = "context siwtch";
 	one_line_test(fp, copy, context_switch_test, &info);
-
 
 	/*****************************************/
 	/*             SEND & RECV               */
@@ -1264,8 +1361,10 @@ int main(int argc, char *argv[])
 	info.iter = BASE_ITER * 10; 
 	info.name = "small read";
 	read_warmup();
+        //launch_perf_stat("small_read", "cache-misses,dtlb_load_misses.walk_completed");
 	one_line_test(fp, copy, read_test, &info);
-	
+        //stop_perf_stat();
+
 	info.iter = BASE_ITER * 10;
 	info.name = "small mmap";
 	one_line_test(fp, copy, mmap_test, &info);
@@ -1319,11 +1418,13 @@ int main(int argc, char *argv[])
 	info.iter = BASE_ITER * 10;
 	info.name = "big mmap";
 	one_line_test(fp, copy, mmap_test, &info);
-	
+
 	info.iter = BASE_ITER / 4;
 	info.name = "big munmap";
+        //launch_perf_stat("big_munmap", "cache-misses,dtlb_store_misses.walk_completed");
 	one_line_test(fp, copy, munmap_test, &info);
-	
+	//stop_perf_stat();
+
 	info.iter = BASE_ITER * 5;
 	info.name = "big page fault";
 	one_line_test(fp, copy, page_fault_test, &info);
@@ -1338,7 +1439,9 @@ int main(int argc, char *argv[])
 
 	info.iter = BASE_ITER;
 	info.name = "huge read";
+        //launch_perf_stat("huge_read", "cache-misses,dtlb_load_misses.walk_completed");
 	one_line_test(fp, copy, read_test, &info);
+        //stop_perf_stat();
 	
 	info.iter = BASE_ITER * 10;
 	info.name = "huge mmap";
@@ -1405,5 +1508,6 @@ int main(int argc, char *argv[])
 	struct timespec *diffTime = calc_diff(&startTime, &endTime);
 	printf("Test took: %ld.%09ld seconds\n",diffTime->tv_sec, diffTime->tv_nsec); 
 	free(diffTime);
+        stop_perf_stat();
 	return(0);
 }
