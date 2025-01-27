@@ -25,6 +25,8 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/prctl.h>  // For prctl()
+#include <linux/prctl.h> // For PR_SET_SPECULATION_CTRL and related constants
 
 int counter=3;
 bool  isFirstIteration = false;
@@ -1102,7 +1104,8 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 }
 
 int main(int argc, char *argv[])
-{
+{  
+        prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_STORE_BYPASS, PR_SPEC_DISABLE, 0, 0);
 	home = getenv("LEBENCH_DIR");
 	
 	output_fn = (char *)malloc(500*sizeof(char));
